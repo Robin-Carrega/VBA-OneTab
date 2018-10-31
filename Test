@@ -1,0 +1,99 @@
+Option Explicit
+
+Sub Robin()
+    Call extraction
+End Sub
+
+
+Sub extraction()
+    Application.ScreenUpdating = False
+    Application.DisplayAlerts = False
+    
+    
+    Dim wb, wbSource As Workbook
+    Set wb = ActiveWorkbook
+    Dim secondfile As String
+    Dim count_files As Double
+    Dim count As Double
+    Dim strPath, strSpec As String
+    Dim line_Find As Integer
+    Dim name_files As String
+    Dim strYear, strMonth, strDay As Double
+    Dim strMode As String
+    Dim lastRow As Double
+    Dim row As Double
+    
+    strPath = Range("C3").Value & Range("C4").Value & "\"
+    strYear = Range("C4").Value
+    strMonth = Range("C5").Value
+    strDay = Range("C6").Value
+    
+    strPath = Range("C3").Value & Range("C4").Value & "-" & Range("C5").Value & "-" & Range("C6").Value & "\"
+    
+    count_files = Range("C8").Value
+    name_files = Range("C9").Value
+    strMode = Range("C10").Value
+    
+    For count = 1 To count_files
+    
+        strSpec = strPath & name_files & " (" & count & ")" & ".xlsx"
+        Workbooks.Open strSpec, UpdateLinks:=0
+        Set wbSource = ActiveWorkbook
+
+        If (Range("A1") = "Mandatory") Then
+            Range("A2").Select
+        Else
+            Range("A1").Select
+        End If
+        
+        Range(Selection, Selection.End(xlDown)).Select
+        Range(Selection, Selection.End(xlToRight)).Select
+        Selection.Copy
+        
+        If strMode = "Multi Tab" Then
+            Windows("Macro.xlsm").Activate
+            Sheets.Add After:=ActiveSheet
+            Range("A1").Select
+            ActiveSheet.Paste
+            Range("A1").Select
+            Sheets("Q&A").Visible = False
+            'ActiveSheet.Name = Range("E3").Value
+        ElseIf strMode = "One Tab" Then
+            Windows("Macro.xlsm").Activate
+            Sheets("Q&A").Visible = True
+            Sheets("Q&A").Select
+            lastRow = Cells.SpecialCells(xlCellTypeLastCell).row
+            Range("A" & lastRow + 1).Select
+            ActiveSheet.Paste
+            Range("A1").Select
+            'delete all the headers
+        End If
+        
+        Application.CutCopyMode = False
+        wbSource.Close SaveChanges:=False
+        
+    Next count
+    
+    If strMode = "One Tab" Then
+            Sheets("Q&A").Select
+            Rows("2:2").Select
+            Range(Selection, Selection.End(xlDown)).Select
+            Selection.RowHeight = 15
+            lastRow = Cells.SpecialCells(xlCellTypeLastCell).row
+            
+            For row = 3 To lastRow
+                If (Range("A" & row).Value = "Periodicity") Then
+                    Rows(row).EntireRow.Delete
+                End If
+            Next row
+        End If
+        
+    Sheets("Home").Select
+    
+    UserForm1.Show
+
+
+    Application.ScreenUpdating = True
+    Application.DisplayAlerts = True
+End Sub
+
