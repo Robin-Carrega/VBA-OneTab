@@ -75,18 +75,18 @@ Sub extraction()
     Next count
     
     If strMode = "One Tab" Then
-            Sheets("Q&A").Select
-            Rows("2:2").Select
-            Range(Selection, Selection.End(xlDown)).Select
-            Selection.RowHeight = 15
-            lastRow = Cells.SpecialCells(xlCellTypeLastCell).row
-            
-            For row = 3 To lastRow
-                If (Range("A" & row).Value = "Periodicity") Then
-                    Rows(row).EntireRow.Delete
-                End If
-            Next row
-        End If
+        Sheets("Q&A").Select
+        Rows("2:2").Select
+        Range(Selection, Selection.End(xlDown)).Select
+        Selection.RowHeight = 15
+        lastRow = Cells.SpecialCells(xlCellTypeLastCell).row
+        
+        For row = 3 To lastRow
+            If (Range("A" & row).Value = "Periodicity") Then
+                Rows(row).EntireRow.Delete
+            End If
+        Next row
+    End If
         
     Sheets("Home").Select
     
@@ -96,4 +96,3 @@ Sub extraction()
     Application.ScreenUpdating = True
     Application.DisplayAlerts = True
 End Sub
-
